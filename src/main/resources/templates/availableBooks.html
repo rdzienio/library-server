@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <title>Dostępne książki | Biblioteka na Bagnie</title>
+</head>
+<body>
+<nav class="nav w3-bar w3-green">
+    <div class="w3-bar-item"><a href="/">Wszystkie</a></div>
+    <div class="w3-bar-item"><a href="/availableBooks">Dostępne</a></div>
+    <div class="w3-bar-item"><a href="/rentedBooks">Wypożyczone</a></div>
+</nav>
+<header class="header w3-panel">
+    <h1>Lista dostępnych książek</h1>
+</header>
+<table id="books" class="w3-table w3-striped w3-border">
+    <tr class="w3-green">
+        <th>Autor</th>
+        <th>Tytuł</th>
+        <th>Data wydania</th>
+        <th>Nr biblioteczny</th>
+        <th>Krótki opis</th>
+    </tr>
+
+    <tr th:if="${dostepne.isEmpty()}" class="w3-text-grey">
+        <td colspan="5">Brak dostępnych książek.</td>
+    </tr>
+
+    <tr th:each="ksiazka, iStat : ${dostepne}">
+        <td th:text="${ksiazka.author}" />
+        <td th:text="${ksiazka.title}" />
+        <td th:text="${ksiazka.releaseDate}" />
+        <td th:text="${ksiazka.id}" />
+        <td th:text="${ksiazka.description}" />
+    </tr>
+
+</table>
+
+</body>
+</html>
