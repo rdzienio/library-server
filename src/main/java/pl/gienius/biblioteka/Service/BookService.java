@@ -95,6 +95,7 @@ public class BookService {
         Optional<Book> bookOptional = bookRepository.findById(id);
         if (bookOptional.isPresent()) {
             Book bookToUpdate = bookOptional.get();
+            bookToUpdate.setId(updatedBook.getId());
             bookToUpdate.setTitle(updatedBook.getTitle());
             bookToUpdate.setDescription(updatedBook.getDescription());
             bookToUpdate.setReleaseDate(updatedBook.getReleaseDate());

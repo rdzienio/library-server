@@ -70,8 +70,27 @@ public class WriterRestController {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             logger.info("Updating book: " + book);
+            book.setId(existingBook.getId());
+            book.setWriter(existingBook.getWriter());
             bookService.updateBook(id, book);
             return new ResponseEntity<>(book, HttpStatus.OK);
+        } else {
+            logger.info("Did not found the book by id: " + id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<Void> removeBook(@PathVariable Long id, @RequestHeader("Writer-ID") Long writerId) {
+        Book existingBook = bookService.getBookById(id);
+        if (existingBook != null) {
+            if (!Objects.equals(existingBook.getWriter().getId(), writerId)) {
+                logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            logger.info("Removing book: " + existingBook);
+            bookService.removeBook(id);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             logger.info("Did not found the book by id: " + id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

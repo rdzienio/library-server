@@ -60,18 +60,7 @@ public class BookRestController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeBook(@PathVariable Long id) {
-        Book existingBook = bookService.getBookById(id);
-        if (existingBook != null) {
-            logger.info("Removing book: " + existingBook);
-            bookService.removeBook(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            logger.info("Did not found the book by id: " + id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+
 
     /*@PostMapping
     public ResponseEntity<Book> addNewBook(@RequestBody Book newBook) {
