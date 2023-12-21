@@ -69,11 +69,17 @@ public class WriterRestController {
                 logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            logger.info("Updating book: " + book);
-            book.setId(existingBook.getId());
-            book.setWriter(existingBook.getWriter());
-            bookService.updateBook(id, book);
-            return new ResponseEntity<>(book, HttpStatus.OK);
+            if(bookService.blockBook(existingBook.getId())!=0) {
+                logger.info("Updating book: " + book);
+                book.setId(existingBook.getId());
+                book.setWriter(existingBook.getWriter());
+                bookService.updateBook(id, book);
+                return new ResponseEntity<>(book, HttpStatus.OK);
+            }
+            else {
+                logger.info("The book with ID: " + id + " is rented by somebody! Try again later...");
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
         } else {
             logger.info("Did not found the book by id: " + id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

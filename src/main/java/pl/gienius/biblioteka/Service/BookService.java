@@ -31,6 +31,8 @@ public class BookService {
     private List<Book> availableBooks = new ArrayList<Book>(); //dostępne ksiązki do wypożyczenia i blokowania
     private List<Book> rentedBooks = new ArrayList<Book>(); //wypożyczone ksiązki, nie mogą być obslugiwane przez pisarzy, ale mogą być czytane
 
+    private List<Book> blockedBooks = new ArrayList<Book>(); //zablokowane książki przez pisarzy
+
     public int init() {
         if (initFlag) return -1;
         Writer w = new Writer("Sienkiewicz");
@@ -47,7 +49,7 @@ public class BookService {
 
     public List<Book> getAllBooks() {
         setAllBooks();
-        if(!allBooks.isEmpty())
+        if (!allBooks.isEmpty())
             logger.info("ostatnie Id to: " + allBooks.getLast().getId());
         else
             logger.info("Lista jest pusta!");
@@ -66,14 +68,18 @@ public class BookService {
         return rentedBooks;
     }
 
+    public List<Book> getBlookList() {
+        return blockedBooks;
+    }
+
     public Book addBook(Book book) {
         logger.info("BookService#Adding: " + book);
         return bookRepository.save(book);
     }
 
-    public Book getLastBook(){
+    public Book getLastBook() {
         setAllBooks();
-        if(!allBooks.isEmpty())
+        if (!allBooks.isEmpty())
             return allBooks.getLast();
         else
             return null;
@@ -108,5 +114,21 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
+    public boolean readyToBlock(Long id) {
+        Book toBlock = getBookById(id);
+        if (toBlock != null) {
+            return !rentedBooks.contains(toBlock);
+        }
+        return false;
+    }
 
+    public int blockBook(Long id) {
+        if (readyToBlock(id)) {
+            blockedBooks.add(getBookById(id));
+            return 0;
+        }
+        else
+            return -1;
+
+    }
 }
