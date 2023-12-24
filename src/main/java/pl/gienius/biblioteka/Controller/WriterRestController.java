@@ -48,6 +48,16 @@ public class WriterRestController {
         }
     }
 
+    @PostMapping("/addWriter")
+    public ResponseEntity<Writer> addNewWriter(@RequestBody Writer writer) {
+        logger.info("Adding new writer: " + writer);
+        if (writer == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Writer savedWriter = writerService.addWriter(writer); // Save the new writer
+        return new ResponseEntity<>(savedWriter, HttpStatus.CREATED);
+    }
+
     @PostMapping("/addBook")
     public ResponseEntity<Book> addNewBook(@RequestHeader("Writer-ID") Long writerId, @RequestBody Book newBook) {
         logger.info("Writer: " + writerId + ", Adding new book: " + newBook);

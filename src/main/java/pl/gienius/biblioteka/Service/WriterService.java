@@ -29,8 +29,8 @@ public class WriterService {
         return allWriters;
     }
 
-    public void addWriter(Writer newWriter){
-        writerRepository.save(newWriter);
+    public Writer addWriter(Writer newWriter){
+        return writerRepository.save(newWriter);
     }
 
     public Writer getWriterByName(String name){
