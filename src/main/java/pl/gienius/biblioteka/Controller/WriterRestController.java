@@ -79,7 +79,7 @@ public class WriterRestController {
                 logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            if(bookService.blockBook(existingBook.getId())!=0) {
+            if(bookService.readyToUpdate(existingBook.getId())) {
                 logger.info("Updating book: " + book);
                 book.setId(existingBook.getId());
                 book.setWriter(existingBook.getWriter());
@@ -104,9 +104,35 @@ public class WriterRestController {
                 logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            logger.info("Removing book: " + existingBook);
-            bookService.removeBook(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            if(bookService.readyToUpdate(existingBook.getId())) {
+                logger.info("Removing book: " + existingBook);
+                bookService.removeBook(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            else {
+                logger.info("The book with ID: " + id + " is rented by somebody! Try again later...");
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+
+        } else {
+            logger.info("Did not found the book by id: " + id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/block/{id}")
+    public ResponseEntity<Void> blockBook(@PathVariable Long id, @RequestHeader("Writer-ID") Long writerId){
+        Book existingBook = bookService.getBookById(id);
+        if (existingBook != null) {
+            if (!Objects.equals(existingBook.getWriter().getId(), writerId)) {
+                logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            else {
+                logger.info("Writer: " + writerId + " blocked book: " + existingBook);
+                bookService.blockBook(id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
         } else {
             logger.info("Did not found the book by id: " + id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

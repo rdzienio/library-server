@@ -114,7 +114,7 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
-    public boolean readyToBlock(Long id) {
+    public boolean readyToUpdate(Long id) {
         Book toBlock = getBookById(id);
         if (toBlock != null) {
             return !rentedBooks.contains(toBlock);
@@ -123,12 +123,10 @@ public class BookService {
     }
 
     public int blockBook(Long id) {
-        if (readyToBlock(id)) {
+        if (getBookById(id) != null) {
             blockedBooks.add(getBookById(id));
             return 0;
-        }
-        else
+        } else
             return -1;
-
     }
 }
