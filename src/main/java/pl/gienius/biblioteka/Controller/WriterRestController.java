@@ -129,9 +129,14 @@ public class WriterRestController {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             else {
-                logger.info("Writer: " + writerId + " blocked book: " + existingBook);
-                bookService.blockBook(id);
-                return new ResponseEntity<>(HttpStatus.OK);
+                if (bookService.blockBook(id)==0) {
+                    logger.info("Writer: " + writerId + " blocked book: " + existingBook);
+                    return new ResponseEntity<>(HttpStatus.OK);
+                }
+                else {
+                    logger.info("Writer: " + writerId + " could not block book: " + existingBook);
+                    return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                }
             }
         } else {
             logger.info("Did not found the book by id: " + id);
