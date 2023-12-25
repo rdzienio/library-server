@@ -15,13 +15,13 @@ public class RentalController {
 
     @GetMapping("/rented")
     public String getAllRentals(Model model) {
-        model.addAttribute("wypozyczone", rentalService.getRentalList());
+        model.addAttribute("rentalList", rentalService.getRentalList());
         return "rented";
     }
 
     @GetMapping("/activeRentals")
     public String getActiveRentals(Model model) {
-        model.addAttribute("wypozyczone", rentalService.getActiveRentals());
+        model.addAttribute("activeRental", rentalService.getActiveRentals());
         return "activeRentals";
     }
 }

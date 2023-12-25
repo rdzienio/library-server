@@ -32,7 +32,7 @@ public class RentalService {
     }
 
     public List<Rental> getActiveRentals(){
-        return (List<Rental>) rentalRepository.findByEndDateIsNull();
+        return (List<Rental>) rentalRepository.findByEndRentIsNull();
     }
 
     public boolean rentBook(Long bookId, Long readerId){
