@@ -144,4 +144,28 @@ public class BookService {
         } else
             return -1;
     }
+
+    public Book getBookByTitle(String title){
+        setAllBooks();
+        if (title != null) {
+            for (Book book : allBooks) {
+                if (book.getTitle().equals(title)) {
+                    return book;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Book getBookByWriter(String writer){
+        setAllBooks();
+        if (writer != null) {
+            for (Book book : allBooks) {
+                if (book.getWriter().getName().equals(writer)) {
+                    return book;
+                }
+            }
+        }
+        return null;
+    }
 }
