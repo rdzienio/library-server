@@ -22,6 +22,7 @@
     <tr class="w3-green">
         <th>L.p.</th>
         <th>Czytelnik</th>
+        <th>Nr książki</th>
         <th>Tytuł książki</th>
         <th>Data wypożyczenia</th>
         <th>Data zwrotu</th>
@@ -34,6 +35,7 @@
     <tr th:each="rental, iStat : ${rentalList}">
         <td th:text="${rental.id}"/>
         <td th:text="${rental.reader.name}"/>
+        <td th:text="${rental.book.id}"/>
         <td th:text="${rental.book.title}"/>
         <td th:text="${rental.startRent}"/>
         <td th:text="${rental.endRent != null ? rental.endRent : 'Not Ended Yet'}"/>

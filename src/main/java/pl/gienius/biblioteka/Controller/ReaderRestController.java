@@ -5,9 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.gienius.biblioteka.Entity.Book;
 import pl.gienius.biblioteka.Entity.Reader;
-import pl.gienius.biblioteka.Entity.Writer;
+import pl.gienius.biblioteka.Entity.Rental;
+import pl.gienius.biblioteka.Service.BookService;
 import pl.gienius.biblioteka.Service.ReaderService;
+import pl.gienius.biblioteka.Service.RentalService;
 
 import java.util.List;
 
@@ -16,11 +19,16 @@ import java.util.List;
 public class ReaderRestController {
 
     private ReaderService readerService;
+    private RentalService rentalService;
+
+    private BookService bookService;
 
     Logger logger = LoggerFactory.getLogger(ReaderRestController.class);
 
-    public ReaderRestController(ReaderService readerService) {
+    public ReaderRestController(ReaderService readerService, RentalService rentalService, BookService bookService) {
         this.readerService = readerService;
+        this.rentalService = rentalService;
+        this.bookService = bookService;
     }
 
     @GetMapping
@@ -41,4 +49,16 @@ public class ReaderRestController {
         Reader savedReader = readerService.addReader(reader); // Save the new reader
         return new ResponseEntity<>(savedReader, HttpStatus.CREATED);
     }
+
+    @PostMapping("/rent/{id}")
+    public ResponseEntity<Void> rentBook(@PathVariable Long id, @RequestHeader("Reader-ID") Long readerId){
+        if(rentalService.rentBook(id, readerId)) {
+            logger.info("New rental by reader: " + readerId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+
+
 }
