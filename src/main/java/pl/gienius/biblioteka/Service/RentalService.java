@@ -11,6 +11,7 @@ import pl.gienius.biblioteka.Repository.RentalRepository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RentalService {
@@ -31,26 +32,48 @@ public class RentalService {
         return (List<Rental>) rentalRepository.findAll();
     }
 
-    public List<Rental> getActiveRentals(){
+    public List<Rental> getActiveRentals() {
         return (List<Rental>) rentalRepository.findByEndRentIsNull();
     }
 
-    public boolean rentBook(Long bookId, Long readerId){
+    public boolean rentBook(Long bookId, Long readerId) {
         Book toRent = bookService.getBookById(bookId);
         Reader reader = readerService.getReaderById(readerId);
         if (toRent != null && reader != null) {
-            if(bookService.canBeRented(bookId)) {
+            if (bookService.canBeRented(bookId)) {
                 LocalDate startDate = LocalDate.now();
-                //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 logger.info("New rental: " + rentalRepository.save(new Rental(startDate, reader, toRent)));
                 bookService.rentBook(bookId);
                 return true;
-            }
-            else {
+            } else {
                 logger.info("This book: " + bookId + " cannot be rented!");
                 return false;
             }
         }
         return false;
     }
+
+    public boolean returnBook(Long bookId, Long readerId) {
+        Rental rental = rentalRepository.findActiveRentalByBookIdAndReaderId(bookId, readerId);
+        if (rental != null) {
+            rental.setEndRent(LocalDate.now());
+            rentalRepository.save(rental);
+            logger.info("Returned the book: " + bookId + " by reader: " + readerId);
+            if (isRented(bookId)) {
+                logger.info("Book " + bookId + " is not rented already");
+                bookService.returnBook(bookId);
+            }
+            return true;
+        } else {
+            logger.info("Could not find the rental for: " + bookId + " by reader: " + readerId);
+            return false;
+        }
+    }
+
+    public boolean isRented(Long bookId) {
+        logger.info("Rented list: " + rentalRepository.findActiveRentalByBookId(bookId).size());
+        return rentalRepository.findActiveRentalByBookId(bookId).size() == 1;
+    }
+
+
 }

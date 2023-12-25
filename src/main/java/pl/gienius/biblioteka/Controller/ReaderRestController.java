@@ -60,5 +60,15 @@ public class ReaderRestController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
+    @DeleteMapping("/rent/{id}")
+    public ResponseEntity<Void> returnBook(@PathVariable Long id, @RequestHeader("Reader-ID") Long readerId){
+        if(rentalService.returnBook(id, readerId)) {
+            logger.info("Returned the book: " + id + " by reader: " + readerId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+
 
 }

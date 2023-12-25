@@ -186,8 +186,7 @@ public class BookService {
 
     public void returnBook(Long id) {
         if (getBookById(id) != null) {
-            if (rentedBooks.contains(getBookById(id)))
-                rentedBooks.remove(getBookById(id));
+            rentedBooks.remove(getBookById(id));
         }
     }
 }
