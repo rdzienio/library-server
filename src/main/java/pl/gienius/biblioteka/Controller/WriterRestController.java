@@ -79,14 +79,13 @@ public class WriterRestController {
                 logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            if(bookService.readyToUpdate(existingBook.getId())) {
+            if (bookService.readyToUpdate(existingBook.getId())) {
                 logger.info("Updating book: " + book);
                 book.setId(existingBook.getId());
                 book.setWriter(existingBook.getWriter());
                 bookService.updateBook(id, book);
                 return new ResponseEntity<>(book, HttpStatus.OK);
-            }
-            else {
+            } else {
                 logger.info("The book with ID: " + id + " is rented by somebody! Try again later...");
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
@@ -104,12 +103,11 @@ public class WriterRestController {
                 logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            if(bookService.readyToUpdate(existingBook.getId())) {
+            if (bookService.readyToUpdate(existingBook.getId())) {
                 logger.info("Removing book: " + existingBook);
                 bookService.removeBook(id);
                 return new ResponseEntity<>(HttpStatus.OK);
-            }
-            else {
+            } else {
                 logger.info("The book with ID: " + id + " is rented by somebody! Try again later...");
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
@@ -121,20 +119,40 @@ public class WriterRestController {
     }
 
     @PostMapping("/block/{id}")
-    public ResponseEntity<Void> blockBook(@PathVariable Long id, @RequestHeader("Writer-ID") Long writerId){
+    public ResponseEntity<Void> blockBook(@PathVariable Long id, @RequestHeader("Writer-ID") Long writerId) {
         Book existingBook = bookService.getBookById(id);
         if (existingBook != null) {
             if (!Objects.equals(existingBook.getWriter().getId(), writerId)) {
                 logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-            else {
-                if (bookService.blockBook(id)==0) {
+            } else {
+                if (bookService.blockBook(id) == 0) {
                     logger.info("Writer: " + writerId + " blocked book: " + existingBook);
                     return new ResponseEntity<>(HttpStatus.OK);
-                }
-                else {
+                } else {
                     logger.info("Writer: " + writerId + " could not block book: " + existingBook);
+                    return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                }
+            }
+        } else {
+            logger.info("Did not found the book by id: " + id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/block/{id}")
+    public ResponseEntity<Void> unblockBook(@PathVariable Long id, @RequestHeader("Writer-ID") Long writerId) {
+        Book existingBook = bookService.getBookById(id);
+        if (existingBook != null) {
+            if (!Objects.equals(existingBook.getWriter().getId(), writerId)) {
+                logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            } else {
+                if (bookService.unblockBook(id) == 0) {
+                    logger.info("Writer: " + writerId + " unblocked book: " + existingBook);
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    logger.info("Writer: " + writerId + " could not unblock book: " + existingBook);
                     return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
                 }
             }

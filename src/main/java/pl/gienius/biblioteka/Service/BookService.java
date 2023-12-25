@@ -74,6 +74,7 @@ public class BookService {
 
     public Book addBook(Book book) {
         logger.info("BookService#Adding: " + book);
+        availableBooks.add(book);
         return bookRepository.save(book);
     }
 
@@ -125,6 +126,20 @@ public class BookService {
     public int blockBook(Long id) {
         if (getBookById(id) != null) {
             blockedBooks.add(getBookById(id));
+            if (availableBooks.remove(getBookById(id))) logger.info("Book deleted");
+            logger.info("Available books: " + availableBooks.size());
+            logger.info("Blocked books: " + blockedBooks.size());
+            return 0;
+        } else
+            return -1;
+    }
+
+    public int unblockBook(Long id) {
+        if (getBookById(id) != null) {
+            if(blockedBooks.remove(getBookById(id))) logger.info("Book deleted");
+            availableBooks.add(getBookById(id));
+            logger.info("Available books: " + availableBooks.size());
+            logger.info("Blocked books: " + blockedBooks.size());
             return 0;
         } else
             return -1;

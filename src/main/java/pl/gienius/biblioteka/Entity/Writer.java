@@ -3,7 +3,7 @@ package pl.gienius.biblioteka.Entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Writer implements Serializable {
@@ -20,8 +20,6 @@ public class Writer implements Serializable {
         this.name = name;
     }
 
-    //@OneToMany(mappedBy = "writer")
-    //private List<Book> books;
 
     public Long getId() {
         return id;
@@ -35,13 +33,6 @@ public class Writer implements Serializable {
         this.name = name;
     }
 
-    /*public List<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(List<Book> books) {
-        this.books = books;
-    }*/
 
     @Override
     public String toString() {
@@ -49,6 +40,19 @@ public class Writer implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Writer writer = (Writer) o;
+        return Objects.equals(getName(), writer.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }
 

@@ -38,4 +38,10 @@ public class BookController {
         model.addAttribute("wypozyczone", bookService.getRentedBooks());
         return "rentedBooks";
     }
+
+    @GetMapping("/blockedBooks")
+    public String getBlockedBooks(Model model){
+        model.addAttribute("zablokowane", bookService.getBlookList());
+        return "blockedBooks";
+    }
 }

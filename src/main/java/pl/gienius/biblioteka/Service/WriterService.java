@@ -1,7 +1,6 @@
 package pl.gienius.biblioteka.Service;
 
 import org.springframework.stereotype.Service;
-import pl.gienius.biblioteka.Entity.Book;
 import pl.gienius.biblioteka.Entity.Writer;
 import pl.gienius.biblioteka.Repository.WriterRepository;
 

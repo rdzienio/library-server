@@ -11,6 +11,7 @@
     <div class="w3-bar-item"><a href="/">Wszystkie</a></div>
     <div class="w3-bar-item"><a href="/availableBooks">Dostępne</a></div>
     <div class="w3-bar-item"><a href="/rentedBooks">Wypożyczone</a></div>
+    <div class="w3-bar-item"><a href="/blockedBooks">Zablokowane</a></div>
 </nav>
 <header class="header w3-panel">
     <h1>Lista dostępnych książek</h1>
@@ -29,7 +30,7 @@
     </tr>
 
     <tr th:each="ksiazka, iStat : ${dostepne}">
-        <td th:text="${ksiazka.author}" />
+        <td th:text="${ksiazka.writer.name}" />
         <td th:text="${ksiazka.title}" />
         <td th:text="${ksiazka.releaseDate}" />
         <td th:text="${ksiazka.id}" />
