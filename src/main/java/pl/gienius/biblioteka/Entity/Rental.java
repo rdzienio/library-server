@@ -27,6 +27,15 @@ public class Rental {
     @JoinColumn(name = "book_id")
     private Book book;
 
+    public Rental() {
+    }
+
+    public Rental(LocalDate startRent, Reader reader, Book book) {
+        this.startRent = startRent;
+        this.reader = reader;
+        this.book = book;
+    }
+
     public Long getId() {
         return id;
     }

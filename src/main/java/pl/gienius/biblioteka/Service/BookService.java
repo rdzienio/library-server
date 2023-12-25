@@ -136,7 +136,7 @@ public class BookService {
 
     public int unblockBook(Long id) {
         if (getBookById(id) != null) {
-            if(blockedBooks.remove(getBookById(id))) logger.info("Book deleted");
+            if (blockedBooks.remove(getBookById(id))) logger.info("Book deleted");
             availableBooks.add(getBookById(id));
             logger.info("Available books: " + availableBooks.size());
             logger.info("Blocked books: " + blockedBooks.size());
@@ -145,7 +145,7 @@ public class BookService {
             return -1;
     }
 
-    public Book getBookByTitle(String title){
+    public Book getBookByTitle(String title) {
         setAllBooks();
         if (title != null) {
             for (Book book : allBooks) {
@@ -157,7 +157,7 @@ public class BookService {
         return null;
     }
 
-    public Book getBookByWriter(String writer){
+    public Book getBookByWriter(String writer) {
         setAllBooks();
         if (writer != null) {
             for (Book book : allBooks) {
@@ -167,5 +167,27 @@ public class BookService {
             }
         }
         return null;
+    }
+
+    public boolean canBeRented(Long id) {
+        Book toBlock = getBookById(id);
+        if (toBlock != null) {
+            return !blockedBooks.contains(toBlock);
+        }
+        return false;
+    }
+
+    public void rentBook(Long id) {
+        if (getBookById(id) != null) {
+            if (!rentedBooks.contains(getBookById(id)))
+                rentedBooks.add(getBookById(id));
+        }
+    }
+
+    public void returnBook(Long id) {
+        if (getBookById(id) != null) {
+            if (rentedBooks.contains(getBookById(id)))
+                rentedBooks.remove(getBookById(id));
+        }
     }
 }
