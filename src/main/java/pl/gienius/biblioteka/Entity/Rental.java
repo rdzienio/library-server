@@ -1,8 +1,8 @@
 package pl.gienius.biblioteka.Entity;
 
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -12,11 +12,12 @@ public class Rental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Nonnull
-    private LocalDate start;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startRent;
 
     @Nullable
-    private LocalDate end;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endRent;
 
     @ManyToOne
     @JoinColumn(name = "reader_id")
@@ -30,20 +31,20 @@ public class Rental {
         return id;
     }
 
-    public LocalDate getStart() {
-        return start;
+    public LocalDate getStartRent() {
+        return startRent;
     }
 
-    public void setStart(LocalDate start) {
-        this.start = start;
+    public void setStartRent(LocalDate startRent) {
+        this.startRent = startRent;
     }
 
-    public LocalDate getEnd() {
-        return end;
+    public LocalDate getEndRent() {
+        return endRent;
     }
 
-    public void setEnd(LocalDate end) {
-        this.end = end;
+    public void setEndRent(LocalDate endRent) {
+        this.endRent = endRent;
     }
 
     public Reader getReader() {
