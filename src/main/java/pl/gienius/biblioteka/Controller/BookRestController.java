@@ -89,6 +89,15 @@ public class BookRestController {
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<List<Book>> getAvailableBooks(){
+        List<Book> books = bookService.getAvailableBooks();
+        if (books.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
 
 
 
