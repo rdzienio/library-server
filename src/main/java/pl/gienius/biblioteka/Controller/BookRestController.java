@@ -80,6 +80,15 @@ public class BookRestController {
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
+    @GetMapping("/books")
+    public ResponseEntity<List<Book>> getWriterBooks(@RequestHeader("Writer-ID") Long writerId){
+        List<Book> books = bookService.getWriterBooks(writerId);
+        if (books.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
 
 
 

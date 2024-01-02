@@ -161,4 +161,26 @@ public class WriterRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/check/{id}")
+    public ResponseEntity<Void> checkBook(@PathVariable Long id, @RequestHeader("Writer-ID") Long writerId) {
+        Book existingBook = bookService.getBookById(id);
+        if (existingBook != null) {
+            if (!Objects.equals(existingBook.getWriter().getId(), writerId)) {
+                logger.info("Writer: " + writerId + " is not authorized to check this book: " + id);
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            } else {
+                if (bookService.readyToUpdate(existingBook.getId())) {
+                    logger.info("Writer: " + writerId + " checked the book: " + existingBook + "\nbook is ready to update");
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    logger.info("Writer: " + writerId + " checked the book: " + existingBook + "\nbook is not ready to update");
+                    return new ResponseEntity<>(HttpStatus.CONFLICT);
+                }
+            }
+        } else {
+            logger.info("Did not found the book by id: " + id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

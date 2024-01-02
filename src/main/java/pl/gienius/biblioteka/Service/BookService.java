@@ -169,6 +169,10 @@ public class BookService {
         return null;
     }
 
+    public List<Book> getWriterBooks(Long writerId) {
+        return bookRepository.findBookByWriterId(writerId);
+    }
+
     public boolean canBeRented(Long id) {
         Book toBlock = getBookById(id);
         if (toBlock != null) {
