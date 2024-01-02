@@ -25,6 +25,7 @@
         <th>Data wydania</th>
         <th>Nr biblioteczny</th>
         <th>Krótki opis</th>
+        <th>Czy zablokowana?</th>
     </tr>
 
     <tr th:if="${ksiazki.isEmpty()}" class="w3-text-grey">
@@ -37,6 +38,7 @@
         <td th:text="${ksiazka.releaseDate}" />
         <td th:text="${ksiazka.id}" />
         <td th:text="${ksiazka.description}" />
+        <td th:text="${ksiazka.blocked} ? 'tak' : 'nie'" />
     </tr>
 
 </table>

@@ -124,9 +124,14 @@ public class BookService {
     }
 
     public int blockBook(Long id) {
+        Book toBlock = getBookById(id);
         if (getBookById(id) != null) {
-            blockedBooks.add(getBookById(id));
-            if (availableBooks.remove(getBookById(id))) logger.info("Book deleted");
+            {
+                blockedBooks.add(toBlock);
+                toBlock.setBlocked(true);
+            }
+
+            if (availableBooks.remove(toBlock)) logger.info("Book deleted from available list");
             logger.info("Available books: " + availableBooks.size());
             logger.info("Blocked books: " + blockedBooks.size());
             return 0;
@@ -135,8 +140,10 @@ public class BookService {
     }
 
     public int unblockBook(Long id) {
-        if (getBookById(id) != null) {
-            if (blockedBooks.remove(getBookById(id))) logger.info("Book deleted");
+        Book toUnblock = getBookById(id);
+        if (toUnblock != null) {
+            if (blockedBooks.remove(toUnblock)) logger.info("Book deleted from blocked");
+            toUnblock.setBlocked(false);
             availableBooks.add(getBookById(id));
             logger.info("Available books: " + availableBooks.size());
             logger.info("Blocked books: " + blockedBooks.size());

@@ -27,6 +27,8 @@ public class Book implements Serializable {
 
     private String description;
 
+    private boolean blocked;
+
     public Book() {
     }
 
@@ -36,6 +38,7 @@ public class Book implements Serializable {
         //this.author = author;
         this.releaseDate = releaseDate;
         this.description = description;
+        this.blocked = false;
     }
 
     public Book(Long id, String title, Writer writer, LocalDate releaseDate, String description) {
@@ -45,6 +48,7 @@ public class Book implements Serializable {
         this.releaseDate = releaseDate;
         this.description = description;
         this.id = id;
+        this.blocked = false;
     }
 
     public Long getId() {
@@ -95,6 +99,14 @@ public class Book implements Serializable {
         this.writer = writer;
     }
 
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
@@ -103,6 +115,7 @@ public class Book implements Serializable {
                 ", writer=" + writer +
                 ", releaseDate=" + releaseDate +
                 ", description='" + description + '\'' +
+                ", isBlocked=" + blocked +
                 '}';
     }
 
@@ -111,11 +124,11 @@ public class Book implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(getId(), book.getId()) && Objects.equals(getTitle(), book.getTitle()) && Objects.equals(writer, book.writer) && Objects.equals(getReleaseDate(), book.getReleaseDate()) && Objects.equals(getDescription(), book.getDescription());
+        return isBlocked() == book.isBlocked() && Objects.equals(getId(), book.getId()) && Objects.equals(getTitle(), book.getTitle()) && Objects.equals(getWriter(), book.getWriter()) && Objects.equals(getReleaseDate(), book.getReleaseDate()) && Objects.equals(getDescription(), book.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTitle(), writer, getReleaseDate(), getDescription());
+        return Objects.hash(getId(), getTitle(), getWriter(), getReleaseDate(), getDescription(), isBlocked());
     }
 }
