@@ -29,11 +29,15 @@ public class RentalService {
     }
 
     public List<Rental> getRentalList() {
-        return (List<Rental>) rentalRepository.findAll();
+        return (List<Rental>) rentalRepository.findByEndRentIsNull();
     }
 
     public List<Rental> getActiveRentals() {
         return (List<Rental>) rentalRepository.findByEndRentIsNull();
+    }
+
+    public List<Rental> getActiveRentalsByBook(Long bookId){
+        return (List<Rental>) rentalRepository.findByBookIdAndEndRentIsNull(bookId);
     }
 
     public boolean rentBook(Long bookId, Long readerId) {
@@ -71,8 +75,12 @@ public class RentalService {
     }
 
     public boolean isRented(Long bookId) {
-        logger.info("Rented list: " + rentalRepository.findActiveRentalByBookId(bookId).size());
-        return rentalRepository.findActiveRentalByBookId(bookId).size() == 1;
+        logger.info("Rented list: " + getActiveRentalsByBook(bookId).size());
+        return !getActiveRentalsByBook(bookId).isEmpty();
+    }
+
+    public void removeRentalByBook(Long bookId) {
+         rentalRepository.deleteByBookId(bookId);
     }
 
 

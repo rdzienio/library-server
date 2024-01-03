@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.gienius.biblioteka.Entity.Book;
+import pl.gienius.biblioteka.Entity.Rental;
 import pl.gienius.biblioteka.Entity.Writer;
 import pl.gienius.biblioteka.Service.BookService;
+import pl.gienius.biblioteka.Service.RentalService;
 
 import java.util.List;
 
@@ -18,9 +20,11 @@ public class BookRestController {
     Logger logger = LoggerFactory.getLogger(BookRestController.class);
 
     private BookService bookService;
+    private RentalService rentalService;
 
-    public BookRestController(BookService bookService) {
+    public BookRestController(BookService bookService, RentalService rentalService) {
         this.bookService = bookService;
+        this.rentalService = rentalService;
     }
 
     /*@GetMapping()
@@ -96,6 +100,14 @@ public class BookRestController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+    @GetMapping("/rentals/{id}")
+    public ResponseEntity<List<Rental>> getActiveRentalsByBook(@PathVariable Long id){
+        List<Rental> rentals = rentalService.getActiveRentalsByBook(id);
+        if (rentals.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        else return new ResponseEntity<>(rentals, HttpStatus.OK);
     }
 
 

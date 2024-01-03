@@ -10,4 +10,8 @@ import java.util.List;
 public interface BookRepository extends CrudRepository<Book, Long> {
 
     List<Book> findBookByWriterId(Long writerId);
+    List<Book> findByBlockedFalse();
+    List<Book> findByBlockedTrue();
+
+
 }

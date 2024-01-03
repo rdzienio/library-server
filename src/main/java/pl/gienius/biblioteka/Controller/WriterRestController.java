@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.gienius.biblioteka.Entity.Book;
 import pl.gienius.biblioteka.Entity.Writer;
 import pl.gienius.biblioteka.Service.BookService;
+import pl.gienius.biblioteka.Service.RentalService;
 import pl.gienius.biblioteka.Service.WriterService;
 
 import java.util.List;
@@ -22,9 +23,12 @@ public class WriterRestController {
     private WriterService writerService;
     private BookService bookService;
 
-    public WriterRestController(WriterService writerService, BookService bookService) {
+    private RentalService rentalService;
+
+    public WriterRestController(WriterService writerService, BookService bookService, RentalService rentalService) {
         this.writerService = writerService;
         this.bookService = bookService;
+        this.rentalService = rentalService;
     }
 
     @GetMapping
@@ -79,7 +83,7 @@ public class WriterRestController {
                 logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            if (bookService.readyToUpdate(existingBook.getId())) {
+            if (!rentalService.isRented(existingBook.getId())) {
                 logger.info("Updating book: " + book);
                 book.setId(existingBook.getId());
                 book.setWriter(existingBook.getWriter());
@@ -103,8 +107,9 @@ public class WriterRestController {
                 logger.info("Writer: " + writerId + " is not authorized to edit this book: " + id);
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            if (bookService.readyToUpdate(existingBook.getId())) {
+            if (!rentalService.isRented(existingBook.getId())) {
                 logger.info("Removing book: " + existingBook);
+                rentalService.removeRentalByBook(id);
                 bookService.removeBook(id);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
@@ -170,7 +175,7 @@ public class WriterRestController {
                 logger.info("Writer: " + writerId + " is not authorized to check this book: " + id);
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             } else {
-                if (bookService.readyToUpdate(existingBook.getId())) {
+                if (!rentalService.isRented(existingBook.getId())) {
                     logger.info("Writer: " + writerId + " checked the book: " + existingBook + "\nbook is ready to update");
                     return new ResponseEntity<>(HttpStatus.OK);
                 } else {

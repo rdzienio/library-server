@@ -20,11 +20,14 @@ public class BookService {
 
     private WriterService writerService;
 
+    //private RentalService rentalService;
+
     private Boolean initFlag = false;
 
     public BookService(BookRepository bookRepository, WriterService writerService) {
         this.bookRepository = bookRepository;
         this.writerService = writerService;
+        //this.rentalService = rentalService;
     }
 
     private List<Book> allBooks = new ArrayList<Book>();  //wszystkie ksiązki
@@ -59,8 +62,11 @@ public class BookService {
     public void setAllBooks() {
         allBooks = (List<Book>) bookRepository.findAll();
     }
+    public  void setBlockedBooks() {blockedBooks = bookRepository.findByBlockedTrue();}
+    public void setAvailableBooks() {availableBooks = bookRepository.findByBlockedFalse();}
 
     public List<Book> getAvailableBooks() {
+        setAvailableBooks();
         return availableBooks;
     }
 
@@ -69,12 +75,13 @@ public class BookService {
     }
 
     public List<Book> getBlookList() {
+        setBlockedBooks();
         return blockedBooks;
     }
 
     public Book addBook(Book book) {
         logger.info("BookService#Adding: " + book);
-        availableBooks.add(book);
+        if(availableBooks.add(book)) logger.info("BookService#Adding: " + book);
         return bookRepository.save(book);
     }
 
@@ -115,23 +122,26 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
-    public boolean readyToUpdate(Long id) {
+    /*public boolean readyToUpdate(Long id) {
         Book toBlock = getBookById(id);
         if (toBlock != null) {
-            return !rentedBooks.contains(toBlock);
+            return !rentalService.isRented(toBlock.getId());
         }
         return false;
-    }
+    }*/
 
     public int blockBook(Long id) {
         Book toBlock = getBookById(id);
         if (getBookById(id) != null) {
             {
-                blockedBooks.add(toBlock);
+                //blockedBooks.add(toBlock);
                 toBlock.setBlocked(true);
+                updateBook(toBlock.getId(), toBlock);
             }
+            setAvailableBooks();
+            setBlockedBooks();
 
-            if (availableBooks.remove(toBlock)) logger.info("Book deleted from available list");
+            //if (availableBooks.remove(toBlock)) logger.info("Book deleted from available list");
             logger.info("Available books: " + availableBooks.size());
             logger.info("Blocked books: " + blockedBooks.size());
             return 0;
@@ -142,9 +152,12 @@ public class BookService {
     public int unblockBook(Long id) {
         Book toUnblock = getBookById(id);
         if (toUnblock != null) {
-            if (blockedBooks.remove(toUnblock)) logger.info("Book deleted from blocked");
+            //if (blockedBooks.remove(toUnblock)) logger.info("Book deleted from blocked");
             toUnblock.setBlocked(false);
-            availableBooks.add(getBookById(id));
+            updateBook(toUnblock.getId(), toUnblock);
+            //availableBooks.add(getBookById(id));
+            setAvailableBooks();
+            setBlockedBooks();
             logger.info("Available books: " + availableBooks.size());
             logger.info("Blocked books: " + blockedBooks.size());
             return 0;
@@ -183,7 +196,8 @@ public class BookService {
     public boolean canBeRented(Long id) {
         Book toBlock = getBookById(id);
         if (toBlock != null) {
-            return !blockedBooks.contains(toBlock);
+            logger.info("Book: " + !toBlock.isBlocked());
+            return !toBlock.isBlocked();
         }
         return false;
     }
